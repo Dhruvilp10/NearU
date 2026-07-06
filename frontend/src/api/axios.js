@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'https://nearu-backend-mnuh.onrender.com/',
+  baseURL: 'https://nearu-backend-mnuh.onrender.com/api',
 });
 
 API.interceptors.request.use((req) => {
