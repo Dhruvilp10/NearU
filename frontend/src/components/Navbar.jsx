@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { MapPin, LogOut, User } from 'lucide-react';
+import { MapPin, LogOut, User, Search, Store } from 'lucide-react';
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -23,15 +23,14 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <div className="flex items-center gap-6 font-body text-sm">
-          <Link to="/" className="text-ink/70 hover:text-ink transition-colors">Browse</Link>
-          <Link to="/vendors" className="text-ink/70 hover:text-ink transition-colors">Vendors</Link>
-
+        <div className="flex items-center gap-4 sm:gap-6 font-body text-sm">
           {isLoggedIn ? (
             <>
+              <Link to="/browse" className="hidden sm:flex items-center gap-1.5 text-ink/70 hover:text-ink transition-colors"><Search size={16} /> Browse</Link>
+              <Link to="/vendors" className="hidden sm:flex items-center gap-1.5 text-ink/70 hover:text-ink transition-colors"><Store size={16} /> Vendors</Link>
               <Link to="/profile" className="flex items-center gap-1.5 text-ink/70 hover:text-ink transition-colors">
                 <User size={16} />
-                Profile
+                <span className="hidden sm:inline">Profile</span>
               </Link>
               <button
                 onClick={handleLogout}
@@ -43,6 +42,8 @@ export default function Navbar() {
             </>
           ) : (
             <>
+              <Link to="/about" className="hidden sm:block text-ink/70 hover:text-ink transition-colors">About us</Link>
+              <Link to="/contact" className="hidden sm:block text-ink/70 hover:text-ink transition-colors">Contact us</Link>
               <Link to="/login" className="text-ink/70 hover:text-ink transition-colors">Log in</Link>
               <Link to="/signup" className="bg-amber text-ink px-4 py-2 rounded-md font-medium hover:bg-amber/90 transition-colors">
                 Sign up

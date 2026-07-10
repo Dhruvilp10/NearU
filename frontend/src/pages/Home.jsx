@@ -1,165 +1,26 @@
-import { useEffect, useState } from 'react';
-import { LocateFixed } from 'lucide-react';
-import API from '../api/axios';
-import ServiceCard from '../components/ServiceCard';
-import { calculateDistance } from '../utils/distance';
-import RecentlyViewed from '../components/RecentlyViewed';
+import { Link } from 'react-router-dom';
 
-const CATEGORIES = ['All', 'Electrician', 'Plumber', 'Laundry', 'Tiffin Service', 'Tutor', 'Salon'];
+const BENEFITS = [
+  ['Discover nearby', 'Find services that fit your area and your day.'],
+  ['Choose confidently', 'View clear details before you get in touch.'],
+  ['Grow locally', 'Create a vendor profile and reach your community.'],
+];
 
 export default function Home() {
-  const [services, setServices] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [category, setCategory] = useState('All');
-  const [userCoords, setUserCoords] = useState(null);
-  const [radius, setRadius] = useState(5);
-  const [locating, setLocating] = useState(false);
-  const [nearMode, setNearMode] = useState(false);
-
-  useEffect(() => {
-    fetchAll();
-  }, []);
-
-  const fetchAll = async () => {
-    setLoading(true);
-    try {
-      const res = await API.get('/services/all');
-      setServices(res.data);
-      setNearMode(false);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleFindNearMe = () => {
-    if (!navigator.geolocation) return;
-    setLocating(true);
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const { latitude, longitude } = pos.coords;
-        setUserCoords({ latitude, longitude });
-        setNearMode(true);
-        await fetchNearby(latitude, longitude, radius);
-        setLocating(false);
-      },
-      () => setLocating(false)
-    );
-  };
-
-  const fetchNearby = async (lat, lon, km) => {
-    setLoading(true);
-    try {
-      const res = await API.get('/services/nearby/search', {
-        params: { latitude: lat, longitude: lon, maxDistance: km * 1000 },
-      });
-      setServices(res.data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRadiusChange = (e) => {
-    const km = Number(e.target.value);
-    setRadius(km);
-    if (userCoords) fetchNearby(userCoords.latitude, userCoords.longitude, km);
-  };
-
-  const filtered = services.filter((s) => category === 'All' || s.category === category);
-
   return (
-    <div className="max-w-6xl mx-auto px-6 py-10">
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-ink mb-2 tracking-tight">
-          Find trusted help, right around the corner.
-        </h1>
-        <p className="text-sm text-ink/60 max-w-lg">
-          Electricians, tiffin services, tutors and more — added and reviewed by people near you.
-        </p>
-      </div>
-
-      <div className="bg-white border border-hairline rounded-xl p-4 mb-8 max-w-xl">
-        <div className="flex items-center gap-3 mb-3">
-          <button
-            onClick={handleFindNearMe}
-            className="flex items-center gap-2 bg-ink text-paper text-sm font-medium px-4 py-2.5 rounded-md hover:bg-ink/90 transition-colors"
-          >
-            <LocateFixed size={15} />
-            {locating ? 'Locating...' : 'Find near me'}
-          </button>
-          {nearMode && <span className="text-xs text-route font-mono">Showing results near you</span>}
-        </div>
-
-        {nearMode && (
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-ink/60 whitespace-nowrap">Search radius</span>
-            <input
-              type="range"
-              min="1"
-              max="20"
-              value={radius}
-              onChange={handleRadiusChange}
-              className="flex-1 accent-route"
-            />
-            <span className="text-xs font-mono text-ink w-12 text-right">{radius} km</span>
+    <main className="overflow-hidden">
+      <section className="max-w-6xl mx-auto px-6 pt-16 pb-20 lg:pt-24 lg:pb-28">
+        <div className="grid lg:grid-cols-[1.1fr_.9fr] gap-12 items-center">
+          <div>
+            <p className="inline-flex text-xs font-mono font-semibold uppercase tracking-[0.18em] text-route bg-route/10 rounded-full px-3 py-2 mb-6">Your neighbourhood, connected</p>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-ink tracking-tight leading-[1.05]">Good local help is <span className="text-route">closer</span> than you think.</h1>
+            <p className="mt-6 text-base sm:text-lg text-ink/65 leading-relaxed max-w-xl">NearU makes it simple to find dependable local professionals, from home repairs to everyday services, all in one trusted place.</p>
+            <div className="flex flex-wrap gap-3 mt-8"><Link to="/signup" className="bg-amber text-ink px-5 py-3 rounded-md font-semibold text-sm hover:bg-amber/90 transition-colors">Create an account</Link><Link to="/login" className="bg-white border border-hairline text-ink px-5 py-3 rounded-md font-semibold text-sm hover:border-ink/40 transition-colors">Log in</Link></div>
           </div>
-        )}
-      </div>
-
-   <RecentlyViewed />
-
-      <div className="flex gap-2 mb-6 flex-wrap"></div>
-      
-      <div className="flex gap-2 mb-6 flex-wrap">
-        {CATEGORIES.map((c) => (
-          <button
-            key={c}
-            onClick={() => setCategory(c)}
-            className={`text-xs font-medium px-3.5 py-2 rounded-full border transition-colors ${
-              category === c
-                ? 'bg-ink text-paper border-ink'
-                : 'bg-white text-ink/70 border-hairline hover:border-ink/30'
-            }`}
-          >
-            {c}
-          </button>
-        ))}
-      </div>
-
-      <div className="flex items-baseline justify-between mb-4">
-        <span className="font-display font-bold text-sm text-ink">
-          {nearMode ? 'Near you' : 'All services'}
-        </span>
-        <span className="text-xs font-mono text-route">{filtered.length} results</span>
-      </div>
-
-      {loading ? (
-        <p className="text-sm text-ink/50">Loading...</p>
-      ) : filtered.length === 0 ? (
-        <p className="text-sm text-ink/50">No services found yet. Be the first to add one.</p>
-      ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filtered.map((service) => (
-            <ServiceCard
-              key={service._id}
-              service={service}
-              distance={
-                userCoords
-                  ? calculateDistance(
-                      userCoords.latitude,
-                      userCoords.longitude,
-                      service.location.coordinates[1],
-                      service.location.coordinates[0]
-                    )
-                  : null
-              }
-            />
-          ))}
+          <div className="relative bg-ink rounded-3xl p-7 sm:p-9 shadow-xl shadow-ink/10"><div className="absolute -top-5 -right-4 w-20 h-20 rounded-full bg-amber/90" /><div className="relative bg-paper rounded-2xl p-5 sm:p-6"><p className="text-xs font-mono uppercase tracking-wider text-route mb-3">Made for everyday life</p><h2 className="font-display text-2xl font-bold text-ink">Find the right help, right when you need it.</h2><div className="mt-6 space-y-3">{['Browse verified local services', 'Compare providers near your location', 'Manage your profile in one place'].map((item, index) => <div key={item} className="flex items-center gap-3 bg-white border border-hairline rounded-xl px-4 py-3"><span className="w-7 h-7 rounded-full bg-route/10 text-route text-xs font-bold flex items-center justify-center">0{index + 1}</span><span className="text-sm font-medium text-ink/80">{item}</span></div>)}</div></div></div>
         </div>
-      )}
-    </div>
+      </section>
+      <section className="border-y border-hairline bg-white"><div className="max-w-6xl mx-auto px-6 py-14 grid sm:grid-cols-3 gap-8">{BENEFITS.map(([title, description]) => <div key={title} className="border-l-2 border-amber pl-4"><h2 className="font-display font-bold text-lg text-ink">{title}</h2><p className="mt-2 text-sm text-ink/60 leading-relaxed">{description}</p></div>)}</div></section>
+    </main>
   );
 }

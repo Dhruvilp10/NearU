@@ -15,6 +15,7 @@ export default function Footer() {
           <span className="text-xs text-paper/40 ml-2">© 2026</span>
         </div>
         <div className="flex gap-6 text-xs text-paper/60">
+          <Link to="/about" className="hover:text-amber transition-colors">About us</Link>
           <Link to="/faq" className="hover:text-amber transition-colors">FAQ</Link>
           <Link to="/contact" className="hover:text-amber transition-colors">Contact us</Link>
         </div>
