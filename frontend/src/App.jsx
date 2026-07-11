@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Navigate, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -15,12 +15,14 @@ import Contact from './pages/Contact';
 import RequireAuth from './components/RequireAuth';
 
 function App() {
+  const isLoggedIn = Boolean(localStorage.getItem('token'));
+
   return (
     <div className="min-h-screen bg-paper flex flex-col">
       <Navbar />
       <div className="flex-1">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={isLoggedIn ? <Navigate to="/browse" replace /> : <Home />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/about" element={<About />} />

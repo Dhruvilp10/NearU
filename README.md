@@ -142,7 +142,8 @@ NearU can be deployed fully on Render:
 1. Create a **Web Service** for `backend` with the build command `npm install` and start command `npm start`.
 2. Add `MONGO_URI` and `JWT_SECRET` in the backend service's Render environment variables.
 3. Create a **Static Site** for `frontend` with the build command `npm install && npm run build` and publish directory `dist`.
-4. The deployed frontend already communicates with the current Render backend URL: `https://nearu-backend-mnuh.onrender.com/api`.
+4. In the frontend Static Site's **Redirects/Rewrites** settings, add a rewrite from `/*` to `/index.html`. This lets React Router load pages such as `/browse`, `/vendors`, and `/profile` after a refresh or direct visit.
+5. The deployed frontend already communicates with the current Render backend URL: `https://nearu-backend-mnuh.onrender.com/api`.
 
 > Do not use `localhost` in the deployed frontend. `localhost` refers to the visitor's own device, not your Render backend.
 
