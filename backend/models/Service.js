@@ -15,7 +15,7 @@ const serviceSchema = new mongoose.Schema({
   },
   contact: {
     type: String,
-    required: true
+    default: ''
   },
   location: {
     type: {

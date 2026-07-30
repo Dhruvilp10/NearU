@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Phone, MapPin, Clock } from 'lucide-react';
+import { MapPin, Clock } from 'lucide-react';
 import API from '../api/axios';
 import ServiceCard from '../components/ServiceCard';
 
@@ -45,9 +45,6 @@ export default function VendorProfile() {
         )}
 
         <div className="flex flex-wrap gap-4 text-sm text-ink/70 border-t border-hairline pt-4">
-          <span className="flex items-center gap-1.5">
-            <Phone size={14} className="text-route" /> {vendor.mobileNumber}
-          </span>
           <span className="flex items-center gap-1.5">
             <MapPin size={14} className="text-route" /> {vendor.address}
           </span>

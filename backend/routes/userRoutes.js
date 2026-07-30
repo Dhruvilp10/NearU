@@ -75,7 +75,6 @@ router.put('/upgrade-to-vendor', authMiddleware, async (req, res) => {
       name: businessName || user.name,
       category: serviceType,
       description: serviceDescription,
-      contact: user.mobileNumber,
       location: {
         type: 'Point',
         coordinates: [longitude || 0, latitude || 0]
@@ -94,7 +93,7 @@ router.put('/upgrade-to-vendor', authMiddleware, async (req, res) => {
 router.put('/profile', authMiddleware, async (req, res) => {
   try {
     const {
-      name, mobileNumber, address,
+      name, address,
       serviceType, businessName, serviceDescription, serviceTiming, photoUrl
     } = req.body;
 
@@ -102,7 +101,6 @@ router.put('/profile', authMiddleware, async (req, res) => {
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     if (name) user.name = name;
-    if (mobileNumber) user.mobileNumber = mobileNumber;
     if (address) user.address = address;
 
     if (user.isVendor) {
@@ -121,7 +119,6 @@ router.put('/profile', authMiddleware, async (req, res) => {
         if (businessName) service.name = businessName;
         if (serviceType) service.category = serviceType;
         if (serviceDescription) service.description = serviceDescription;
-        if (mobileNumber) service.contact = mobileNumber;
         if (photoUrl) service.photo = photoUrl;
         await service.save();
       }

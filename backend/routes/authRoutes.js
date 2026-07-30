@@ -10,24 +10,23 @@ const Service = require('../models/Service');
 router.post('/signup', async (req, res) => {
   try {
     const {
-      name, email, password, mobileNumber, address,
+      name, username, password, address,
       accountType, // "user" or "vendor"
       serviceType, businessName, serviceDescription, serviceTiming,
       longitude, latitude
     } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ username: username?.toLowerCase() });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: 'Username is already taken' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
       name,
-      email,
+      username,
       password: hashedPassword,
-      mobileNumber,
       address,
       isVendor: accountType === 'vendor',
       vendorInfo: accountType === 'vendor'
@@ -43,7 +42,6 @@ router.post('/signup', async (req, res) => {
         name: businessName || name,
         category: serviceType,
         description: serviceDescription,
-        contact: mobileNumber,
         location: {
           type: 'Point',
           coordinates: [longitude || 0, latitude || 0]
@@ -63,18 +61,18 @@ router.post('/signup', async (req, res) => {
 // LOGIN
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
     // Find user
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ username: username?.toLowerCase() });
     if (!user) {
-      return res.status(400).json({ message: 'Invalid email or password' });
+      return res.status(400).json({ message: 'Invalid username or password' });
     }
 
     // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid email or password' });
+      return res.status(400).json({ message: 'Invalid username or password' });
     }
 
     // Create JWT token
@@ -87,7 +85,7 @@ router.post('/login', async (req, res) => {
     res.status(200).json({
       message: 'Login successful',
       token,
-      user: { id: user._id, name: user.name, email: user.email }
+      user: { id: user._id, name: user.name, username: user.username }
     });
 
   } catch (error) {

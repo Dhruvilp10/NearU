@@ -9,7 +9,7 @@ export default function Signup() {
   const navigate = useNavigate();
   const [accountType, setAccountType] = useState('user');
   const [form, setForm] = useState({
-    name: '', email: '', password: '', mobileNumber: '', address: '',
+    name: '', username: '', password: '', address: '',
     serviceType: '', businessName: '', serviceDescription: '', serviceTiming: '',
   });
   const [photoUrl, setPhotoUrl] = useState('');
@@ -121,14 +121,9 @@ export default function Signup() {
         </div>
 
         <div>
-          <label className="text-sm font-medium text-ink mb-1 block">Email</label>
-          <input required type="email" value={form.email} onChange={update('email')}
-            className="w-full border border-hairline rounded-md px-3 py-2.5 text-sm bg-white focus:outline-none focus:border-route" />
-        </div>
-
-        <div>
-          <label className="text-sm font-medium text-ink mb-1 block">Mobile number</label>
-          <input required value={form.mobileNumber} onChange={update('mobileNumber')}
+          <label className="text-sm font-medium text-ink mb-1 block">Username</label>
+          <input required value={form.username} onChange={update('username')}
+            autoCapitalize="none" autoCorrect="off"
             className="w-full border border-hairline rounded-md px-3 py-2.5 text-sm bg-white focus:outline-none focus:border-route" />
         </div>
 

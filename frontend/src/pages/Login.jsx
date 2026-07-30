@@ -5,7 +5,7 @@ import API from '../api/axios';
 
 export default function Login() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -21,7 +21,7 @@ export default function Login() {
       localStorage.setItem('user', JSON.stringify(res.data.user));
       navigate('/browse', { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid email or password.');
+      setError(err.response?.data?.message || 'Invalid username or password.');
     } finally {
       setLoading(false);
     }
@@ -37,12 +37,14 @@ export default function Login() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="text-sm font-medium text-ink mb-1 block">Email</label>
+          <label className="text-sm font-medium text-ink mb-1 block">Username</label>
           <input
             required
-            type="email"
-            value={form.email}
-            onChange={update('email')}
+            type="text"
+            value={form.username}
+            onChange={update('username')}
+            autoCapitalize="none"
+            autoCorrect="off"
             className="w-full border border-hairline rounded-md px-3 py-2.5 text-sm bg-white focus:outline-none focus:border-route"
           />
         </div>

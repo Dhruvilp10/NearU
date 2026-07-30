@@ -15,7 +15,7 @@ export default function Profile() {
   const [message, setMessage] = useState('');
   const [showUpgradeForm, setShowUpgradeForm] = useState(false);
 
-  const [form, setForm] = useState({ name: '', mobileNumber: '', address: '' });
+  const [form, setForm] = useState({ name: '', address: '' });
   const [vendorForm, setVendorForm] = useState({
     serviceType: '', businessName: '', serviceDescription: '', serviceTiming: '', photoUrl: '',
   });
@@ -27,7 +27,6 @@ export default function Profile() {
       setUser(res.data);
       setForm({
         name: res.data.name,
-        mobileNumber: res.data.mobileNumber,
         address: res.data.address,
       });
       if (res.data.isVendor) {
@@ -109,6 +108,7 @@ export default function Profile() {
         </div>
         <div>
           <h1 className="text-xl font-extrabold text-ink">{user.name}</h1>
+          <p className="text-xs text-ink/50 font-mono">@{user.username}</p>
           <p className="text-sm text-ink/60 flex items-center gap-1.5">
             {user.isVendor ? <Store size={13} /> : <UserIcon size={13} />}
             {user.isVendor ? 'Vendor account' : 'User account'}
@@ -128,12 +128,6 @@ export default function Profile() {
         <div>
           <label className="text-sm font-medium text-ink mb-1 block">Full name</label>
           <input value={form.name} onChange={updateForm('name')}
-            className="w-full border border-hairline rounded-md px-3 py-2.5 text-sm bg-paper focus:outline-none focus:border-route" />
-        </div>
-
-        <div>
-          <label className="text-sm font-medium text-ink mb-1 block">Mobile number</label>
-          <input value={form.mobileNumber} onChange={updateForm('mobileNumber')}
             className="w-full border border-hairline rounded-md px-3 py-2.5 text-sm bg-paper focus:outline-none focus:border-route" />
         </div>
 
